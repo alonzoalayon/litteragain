@@ -37,7 +37,7 @@ var TaskItemView = Backbone.View.extend({
     template: _.template('\
     <%= basura.get("basura") %>&nbsp;\
     <img class="like" src="../images/png/like.png" style="height:20px;">\
-    <span id="CountedClicks"><%= basura.get("__v") %></span>\
+    <span class="me_gusta"><%= basura.get("__v") %></span>\
     <img class="update" src="../images/png/edit.png" style="height:20px;">\
     <img class="destroy" src="../images/png/error.png" style="height:20px;">\
   '),
@@ -53,11 +53,15 @@ var TaskItemView = Backbone.View.extend({
     this.model.set();
   },
   handleLike: function(){
-    var Clicks = 0;
-    Clicks = Clicks + 1;
-    document.getElementById('CountedClicks').innerHTML = Clicks;
-    //console.log(Clicks);
-    this.model.set(Clicks);
+    this.model.fetch();
+    var value = $('span').text();
+    //var Clicks = 0;
+    console.log(value);
+    value = value + 1;
+    //document.getElementbyClassNames('me_gusta').innerHTML = Clicks;
+    console.log(value);
+    this.model.set({
+     __v: value});
     this.model.save();
   },
     render: function() {
