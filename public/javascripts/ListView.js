@@ -32,14 +32,14 @@ var FormView = Backbone.View.extend({
     }
 });
 var TaskItemView = Backbone.View.extend({
-    el: '<li class="list-group-item"></li>',
+    el: '<li class="list-group-item"></br></li>',
 
     template: _.template('\
-    <%= basura.get("basura") %>&nbsp;\
-    <img class="like" src="../images/png/like.png" style="height:20px;">\
-    <span class="me_gusta"><%= basura.get("__v") %></span>\
-    <img class="update" src="../images/png/edit.png" style="height:20px;">\
-    <img class="destroy" src="../images/png/error.png" style="height:20px;">\
+    <%= basura.get("basura") %>&nbsp;&nbsp;&nbsp;\
+    <img class="like faa-bounce animated-hover" src="../images/png/like.png" style="height:20px;" faa-bounce animated>\
+    <span class="me_gusta"><%= basura.get("like") %></span>&nbsp;&nbsp;&nbsp;\
+    <img class="update faa-pulse animated-hover" src="../images/png/edit.png" style="height:20px;">&nbsp;&nbsp;&nbsp;\
+    <img class="destroy faa-flash animated-hover" src="../images/png/error.png" style="height:20px;">\
   '),
   events: {
     'click .destroy': 'handleDestroy',
@@ -53,18 +53,21 @@ var TaskItemView = Backbone.View.extend({
     this.model.set();
   },
   handleLike: function(){
-    this.model.fetch();
-    var value = $('span').text();
-    //var Clicks = 0;
-    console.log(value);
-    value = value + 1;
-    //document.getElementbyClassNames('me_gusta').innerHTML = Clicks;
-    console.log(value);
-    this.model.set({
-     __v: value});
-    this.model.save();
+    //event && event.preventDefault();
+    var likes = this.model.get('like') // this will be a Number
+    if(likes == 0 || likes == null){
+      this.model.set('like', 1);
+    }
+    else{
+      this.model.set('like', likes + 1);
+    }
+
+this.model.save();
+this.render();
   },
     render: function() {
+      //e.preventDefault();
+      //event && event.preventDefault();
         $(this.el).html(this.template({basura: this.model}));
         return this;
     }

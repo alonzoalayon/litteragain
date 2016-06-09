@@ -46,9 +46,10 @@ module.exports = {
   update: function (req, res) {
     var id = req.params.id;
     LitterModel.findOne({_id: id}, function (err, basura) {
-      basura.text = req.body.text ? req.body.text : basura.text;
+      basura.like = req.body.like;
       basura.save(function (err, basura) {
         return res.json(basura);
+        //res.redirect('/');
       });
     });
   },
