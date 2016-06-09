@@ -31,6 +31,42 @@ var FormView = Backbone.View.extend({
         return this;
     }
 });
+
+var EditView = Backbone.View.extend({
+    el: '<div></div>',
+
+    template: _.template('\
+  <form action="#">\
+    <input type="text" name="text" value="">\
+    <button class="save">Save</button>\
+  </form>\
+  '),
+  events:{
+    'click .save': 'handleSave'
+  },
+  handleSave: function(){
+    //var name = this.model.get('basura')
+
+    //this.model.set('basura', "hello");
+    this.model.save();
+    var formView = new FormView();
+    $('#form').html(formView.el);
+  },
+    initialize: function() {
+        this.render();
+    },
+
+    render: function() {
+        // this is where your business logic goes.
+        // it usually starts with...
+        $(this.el).html(this.template({
+            //sodas: this.collection
+        }));
+        // this will stick the template inside of the el
+        return this;
+    }
+});
+
 var TaskItemView = Backbone.View.extend({
     el: '<li class="list-group-item"></br></li>',
 
@@ -50,7 +86,10 @@ var TaskItemView = Backbone.View.extend({
     this.model.destroy();
   },
   handleUpdate: function(){
-    this.model.set();
+this.model.get('basura');
+    var editView = new EditView();
+    //editView.render();
+    $('#form').html(editView.el);
   },
   handleLike: function(){
     //event && event.preventDefault();
