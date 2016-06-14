@@ -46,6 +46,7 @@ module.exports = {
   update: function (req, res) {
     var id = req.params.id;
     LitterModel.findOne({_id: id}, function (err, basura) {
+      basura.basura = req.body.basura ? req.body.basura : basura.basura;
       basura.like = req.body.like;
       basura.save(function (err, basura) {
         return res.json(basura);

@@ -34,10 +34,14 @@ var FormView = Backbone.View.extend({
 
 var EditView = Backbone.View.extend({
     el: '<div></div>',
-
+    initialize: function(){
+      //listens to update even from collection and calls this.render
+      this.listenTo(this.collection, "update", this.render)
+      //this.listenTo(this.model, "remove", this.remove)
+    },
     template: _.template('\
   <form action="#">\
-    <input type="text" name="text" value="">\
+    <input id="input" type="text" name="text" value="<%= basura %>">\
     <button class="save">Save</button>\
   </form>\
   '),
@@ -45,11 +49,12 @@ var EditView = Backbone.View.extend({
     'click .save': 'handleSave'
   },
   handleSave: function(){
-    //var name = this.model.get('basura')
-
-    //this.model.set('basura', "hello");
-    this.model.save();
-    var formView = new FormView();
+    //this.model.get('basura');
+    var input = $('#input').val();
+    this.model.set('basura', input);
+    this.model.save('basura', input);
+    console.log(input);
+    //formView = new FormView();
     $('#form').html(formView.el);
   },
     initialize: function() {
@@ -59,9 +64,7 @@ var EditView = Backbone.View.extend({
     render: function() {
         // this is where your business logic goes.
         // it usually starts with...
-        $(this.el).html(this.template({
-            //sodas: this.collection
-        }));
+        $(this.el).html(this.template(this.model.toJSON()));
         // this will stick the template inside of the el
         return this;
     }
@@ -80,16 +83,27 @@ var TaskItemView = Backbone.View.extend({
   events: {
     'click .destroy': 'handleDestroy',
     'click .update' : 'handleUpdate',
-    'click .like' : 'handleLike'
+    'click .like' : 'handleLike',
+    'click .save' : 'handleSave'
   },
   handleDestroy: function(){
     this.model.destroy();
   },
   handleUpdate: function(){
-this.model.get('basura');
-    var editView = new EditView();
-    //editView.render();
+    this.model.get('basura');
+    console.log(this.model);
+    var editView = new EditView({
+      model: this.model
+   });
+
+
+     //var editView = new EditView({model: this.model});
+    editView.render();
     $('#form').html(editView.el);
+
+
+    //editView.render();
+    //$('#form').html(editView.el)
   },
   handleLike: function(){
     //event && event.preventDefault();
@@ -121,29 +135,33 @@ var TasksListView = Backbone.View.extend({
     },
 
     render: function() {
-      console.log(this.collection.length);
+      //console.log(this.collection.length);
       //console.log(basura.like);
         var that = this;
         // be sure to reset the container el, because if you re-render for any reason, you'll just keep adding to it
         $(this.el).html('');
+
         this.collection.each(function(basura) {
             var taskItemView = new TaskItemView({
                 model: basura
             });
             $(that.el).append(taskItemView.render().el);
+            //this.$el.html(this.template(this.model.toJSON()));
         });
+
         return this;
     }
 });
 
 var tasks = new LitterCollection();
 tasks.fetch();
-console.log(tasks);
+//console.log(tasks);
 var tasksListView = new TasksListView({
     collection: tasks
 });
 
-var formView = new FormView();
+var formView = new FormView({collection: tasks});
+// var editView = new EditView({collection: tasks});
 //formView.render();
 //tasksListView.render();
 $('#form').html(formView.el);
